@@ -18,15 +18,16 @@ int main(int argc, char **argv)
             break;
         } else if (c == 0) {
             putchar('\n');
+        } else if (c == 3) {
+            printf("   :    ");
         } else if (isprint(c)) {
             putchar(c);
         } else if (c == 0x0a) {
-            printf("\n\t");
+            //printf("\n\t");
         } else {
-            printf("\\x%02x", c);
+            printf("%02x ", c);
         }
     }
     putchar('\n');
     fclose(fp);
 }
-
