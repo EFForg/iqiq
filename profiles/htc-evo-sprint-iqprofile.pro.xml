@@ -1,0 +1,107 @@
+<CollectionProfiles>
+    <SchedulerProfile DeleteAfterFailureCount="10"
+                      RetryCount="0"
+                      RetryTimer="0"
+                      UploadUrl="https://collector.iota.spcsdns.net:10003/collector/c">
+        <Connections>
+            <Connection>
+                
+                : #netkey@ 0 0 methodCall ;
+                2    CONSTANT PROPID_WOULD_BILL ;
+                102  CONSTANT IQ_INT_PROP_WOULD_BILL_NO ;
+                :noname
+                	PROPID_WOULD_BILL #netkey@ IQ_INT_PROP_WOULD_BILL_NO = 
+                	;
+            </Connection>
+        </Connections>
+        <UploadSchedule Duration="21600"
+                        HoldoffTime="0"
+                        StartTime="0"
+                        UploadDays="1"
+                        UploadPeriod="Week" />
+        <UploadSchedule Duration="21600"
+                        HoldoffTime="0"
+                        StartTime="21600"
+                        UploadDays="2"
+                        UploadPeriod="Week" />
+        <UploadSchedule Duration="21600"
+                        HoldoffTime="0"
+                        StartTime="43200"
+                        UploadDays="4"
+                        UploadPeriod="Week" />
+        <UploadSchedule Duration="21600"
+                        HoldoffTime="0"
+                        StartTime="64800"
+                        UploadDays="8"
+                        UploadPeriod="Week" />
+        <UploadSchedule Duration="21600"
+                        HoldoffTime="0"
+                        StartTime="10800"
+                        UploadDays="16"
+                        UploadPeriod="Week" />
+        <UploadSchedule Duration="21600"
+                        HoldoffTime="0"
+                        StartTime="32400"
+                        UploadDays="32"
+                        UploadPeriod="Week" />
+        <UploadSchedule Duration="21600"
+                        HoldoffTime="0"
+                        StartTime="54000"
+                        UploadDays="64"
+                        UploadPeriod="Week" />
+    </SchedulerProfile>
+    <MetricsBufferProfile DisableExternalMetrics="1" />
+    <PackageProfiles>
+        <PackageProfile ArchiveBufferPriority="100"
+                        CauseImmediateUpload="val_false"
+                        MaxWaitForCount="1"
+                        PackageName="Device State Package"
+                        ReservedArchiveSpace="0"
+                        StartTrigger="UPTR"
+                        UploadPriority="127"
+                        UploadReasons="7">
+            <SnapshotStartList>
+                <SnapshotStartItem MetricID="SS10"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS18"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1A"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1B"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1D"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1E"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1Q"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1R"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1S"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1T"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+            </SnapshotStartList>
+        </PackageProfile>
+    </PackageProfiles>
+</CollectionProfiles>

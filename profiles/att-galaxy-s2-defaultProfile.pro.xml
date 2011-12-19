@@ -1,0 +1,96 @@
+<CollectionProfiles Name="Default Profile Hoth Mark IX">
+    variable IHERE 0 IHERE !
+    : iallot IHERE +! ;
+    : ivar create ihere @ , dup , iallot ;
+    : (use-ivar) SWAP DUP @ SWAP CELL+ @ ROT SWAP ;
+    : O@ (use-ivar) case 1 of cv@ endof 2 of wv@ endof 4 of qv@ endof endcase ;
+    : O! (use-ivar) case 1 of cv! endof 2 of wv! endof 4 of qv! endof endcase ;
+    0
+    HERE SWAP , 0 , 0 , 0 , USE->REL
+    <SchedulerProfile DeleteAfterFailureCount="0"
+                      SnapshotTriggers="60"
+                      ArchiveFullHeadroom="2"
+                      RetryCount="12"
+                      RetryTimer="3600"
+                      UploadUrl="https://ciqcol01.ciq.labs.att.com:10010/collector/c">
+        <UploadSchedule Duration="21599"
+                        HoldoffTime="20"
+                        StartTime="0"
+                        UploadDays="127"
+                        UploadPeriod="Week" />
+        <UploadSchedule Duration="21599"
+                        HoldoffTime="20"
+                        StartTime="64800"
+                        UploadDays="127"
+                        UploadPeriod="Week" />
+        <Connections BridgePackageTimeout="0">
+            <Connection Reserved_x44_LiteralC="">
+                : #netkey@ 0 0 METHODCALL ;
+                : $netkey@ 0 1 METHODCALL ;
+                1    CONSTANT PROPID_TECH ;
+                3    CONSTANT PROPID_ROAMING ;
+                101  CONSTANT PROP_TECH_GSM ;
+                104  CONSTANT PROP_ROAMING_NO ;
+                106  CONSTANT PROP_TECH_LAN ;
+                2000 CONSTANT PROPID_APN ;
+                :noname PROPID_TECH #netkey@ PROP_TECH_LAN = ;
+            </Connection>
+        </Connections>
+    </SchedulerProfile>
+    <MetricsBufferProfile />
+    <PackageProfiles>
+        <PackageProfile ArchiveBufferPriority="255"
+                        KeepFirst="1"
+                        MaxWaitForCount="5"
+                        PackageName="UPLOAD_EVENT"
+                        StartTrigger="UPTR"
+                        UploadReasons="15">
+            <SnapshotStartList>
+                <SnapshotStartItem MetricID="SS10"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS18"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1A"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1B"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1D"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1E"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1Q"
+                                   NumAfter="2"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1R"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1S"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS1W"
+                                   NumAfter="1"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+                <SnapshotStartItem MetricID="SS2B"
+                                   NumAfter="2"
+                                   NumBefore="0"
+                                   NumType="Metrics" />
+            </SnapshotStartList>
+        </PackageProfile>
+    </PackageProfiles>
+</CollectionProfiles>
