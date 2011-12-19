@@ -195,11 +195,11 @@ static int parse(char *data, long size)
     patch_charset(data, size);
     err = wbxml_parser_parse(parser, (WB_UTINY *)(data + HEADER_LENGTH),
                 (WB_ULONG)(size - HEADER_LENGTH));
+    wbxml_parser_destroy(parser);
     if (err != WBXML_OK) {
         fprintf(stderr, "wbxml: %s\n", wbxml_errors_string(err));
         return 1;
     }
-    wbxml_parser_destroy(parser);
     return 0;
 }
 
