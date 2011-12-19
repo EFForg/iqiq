@@ -54,15 +54,6 @@ static void patch_charset(char *data, long size)
     }
 }
 
-/* Returns 1 if a string is printable, 0 otherwise. */
-static int printable(const char *s)
-{
-    while (*s)
-        if (!isprint(*s++))
-            return 0;
-    return 1;
-}
-
 /* Called after header is loaded. */
 static void start_document(
         void *ctx,
@@ -73,27 +64,8 @@ static void start_document(
     wbxml_charset_get_name(charset, &charset_name);
     assert(charset_name != NULL);  /* We patched it to ASCII. */
     printf("charset: %s (patched)\n", charset_name);
-    if (lang != NULL) {
-        switch (lang->langID) {
-        case WBXML_LANG_WML10:
-            printf("dtd: WML/1.0 (%d)\n", lang->langID);
-            break;
-        case WBXML_LANG_WML11:
-            printf("dtd: WML/1.1 (%d)\n", lang->langID);
-            break;
-        case WBXML_LANG_WML12:
-            printf("dtd: WML/1.2 (%d)\n", lang->langID);
-            break;
-        case WBXML_LANG_WML13:
-            printf("dtd: WML/1.3 (%d)\n", lang->langID);
-            break;
-        default:
-            printf("dtd: standard, but unexpected (%d)\n", lang->langID);
-            break;
-        }
-    } else {
-        printf("dtd: unknown\n");
-    }
+    assert(lang);
+    printf("dtd: %d\n", lang->langID);
 }
 
 /**
@@ -108,16 +80,11 @@ static void start_element(
     assert(local_name);
     if (local_name->type == WBXML_VALUE_TOKEN) {
         printf("tag: token `%s' (%02x)\n",
-               local_name->u.token->xmlName,
+               wbxml_tag_get_xml_name(local_name),
                local_name->u.token->wbxmlToken);
     } else if (local_name->type == WBXML_VALUE_LITERAL) {
-        const char *name = (const char *)wbxml_buffer_get_cstr(
-                local_name->u.literal);
-        if (!name || !printable(name)) {
-            printf("tag: literal ?\n");
-        } else {
-            printf("tag: literal `%s'\n", name);
-        }
+        printf("tag: literal `%s'\n",
+               wbxml_tag_get_xml_name(local_name));
     }
     if (attrs) {
         WBXMLAttribute *attr;
@@ -125,31 +92,15 @@ static void start_element(
         for (i = 0; (attr = attrs[i]); i++) {
             if (attr->name->type == WBXML_VALUE_TOKEN) {
                 printf("- attr: token `%s' (%02x)\n",
-                       attr->name->u.token->xmlName,
+                       wbxml_attribute_name_get_xml_name(attr->name),
                        attr->name->u.token->wbxmlToken);
             } else {
-                const char *name = (const char *)wbxml_buffer_get_cstr(
-                        attr->name->u.literal);
-                if (!name || !printable(name)) {
-                    printf("- attr: literal ?\n");
-                } else {
-                    printf("- attr: literal `%s'\n", name);
-                }
+                printf("- attr: literal `%s'\n",
+                       wbxml_attribute_name_get_xml_name(attr->name));
             }
             if (attr->value) {
-                const char *value = (const char *)wbxml_buffer_get_cstr(
-                        attr->value);
-                assert(value);
-                if (printable(value)) {
-                    printf("  = `%s'\n", value);
-                } else {
-                    if (wbxml_buffer_binary_to_hex(attr->value,
-                                FALSE) == TRUE) {
-                        printf("  = `%s'\n", value);
-                    } else {
-                        printf("  = ?\n");
-                    }
-                }
+                printf("  = `%s'\n",
+                       wbxml_attribute_get_xml_value(attr));
             } else {
                 printf("  [no value]\n");
             }
