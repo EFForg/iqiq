@@ -7,16 +7,21 @@
 #include <stdlib.h>
 #include <wbxml.h>
 
+/* Spaces to tab when printing output. */
+#define TAB_WIDTH 4
+
 /* Number of header bytes before WBXML-encoded data. */
 #define HEADER_LENGTH 6
 
 /* libwbxml needs this magic number to override the table properly. */
 #define LANG_CIQ_OTA 666
 
+/* Bogus public id entry. */
 const WBXMLPublicIDEntry sv_ciq_ota_public_id = {
     WBXML_PUBLIC_ID_UNKNOWN, NULL, "config", "ciq10.dtd"
 };
 
+/* Tag names and ids. */
 const WBXMLTagEntry sv_ciq_ota_tag_table[] = {
     { "CollectionProfiles",   0x00, 0x05 },
     { "SchedulerProfile",     0x00, 0x06 },
@@ -45,6 +50,7 @@ const WBXMLTagEntry sv_ciq_ota_tag_table[] = {
     { NULL,                   0x00, 0x00 }
 };
 
+/* Attribute names and ids. */
 const WBXMLAttrEntry sv_ciq_ota_attr_table[] = {
     { "RetryCount",                 NULL, 0x00, 0x05 },
     { "RetryTimer",                 NULL, 0x00, 0x06 },
@@ -123,6 +129,7 @@ const WBXMLAttrEntry sv_ciq_ota_attr_table[] = {
     { NULL,                         NULL, 0x00, 0x00 }
 };
 
+/* Enumerated attribute value strings and ids. */
 const WBXMLAttrValueEntry sv_ciq_ota_attr_value_table[] = {
     { "Week",         0x00, 0x85 },
     { "Month",        0x00, 0x86 },
@@ -146,6 +153,7 @@ const WBXMLAttrValueEntry sv_ciq_ota_attr_value_table[] = {
     { NULL,           0x00, 0x00 }
 };
 
+/* A bogus table to drive libwbxml's parser. */
 const WBXMLLangEntry sv_ciq_ota_table[] = {
     {
       LANG_CIQ_OTA,
@@ -157,6 +165,20 @@ const WBXMLLangEntry sv_ciq_ota_table[] = {
       NULL,
     },
 };
+
+/* Context to carry along through parse callbacks. */
+typedef struct {
+    int indent;  /* Current indentation level. */
+} ParseContext;
+
+/* Print spaces. */
+static void indent(int n)
+{
+    int i = 0;
+    for (i = 0; i < n; i++) {
+        putchar(' ');
+    }
+}
 
 /* Reads contents of file.
  * Returns newly allocated data and size in *size, or NULL on failure. */
@@ -206,54 +228,74 @@ static void patch_charset(char *data, long size)
  * Called at the start of an element.
  */
 static void start_element(
-        void *ctx,
+        void *vctx,
         WBXMLTag *local_name,
         WBXMLAttribute **attrs,
         WB_BOOL empty)
 {
+    ParseContext *ctx = (ParseContext *)vctx;
+    int start_col;
     assert(local_name);
-    if (local_name->type == WBXML_VALUE_TOKEN) {
-        printf("start tag: token `%s' (%02x)\n",
-               wbxml_tag_get_xml_name(local_name),
-               local_name->u.token->wbxmlToken);
-    } else if (local_name->type == WBXML_VALUE_LITERAL) {
-        printf("start tag: literal `%s'\n",
-               wbxml_tag_get_xml_name(local_name));
-    }
+    assert(local_name->type == WBXML_VALUE_TOKEN);
+    indent(ctx->indent);
+    printf("<%s", wbxml_tag_get_xml_name(local_name));
+    start_col = ctx->indent +
+        strlen((const char *)wbxml_tag_get_xml_name(local_name)) + 2;
     if (attrs) {
         WBXMLAttribute *attr;
         int i;
         for (i = 0; (attr = attrs[i]); i++) {
-            if (attr->name->type == WBXML_VALUE_TOKEN) {
-                printf("- attr: token `%s' (%02x)\n",
-                       wbxml_attribute_name_get_xml_name(attr->name),
-                       attr->name->u.token->wbxmlToken);
+            assert(attr->name->type == WBXML_VALUE_TOKEN);
+            if (i == 0) {
+                indent(1);
             } else {
-                printf("- attr: literal `%s'\n",
-                       wbxml_attribute_name_get_xml_name(attr->name));
+                putchar('\n');
+                indent(start_col);
             }
-            if (attr->value) {
-                printf("  = `%s'\n",
-                       wbxml_attribute_get_xml_value(attr));
-            } else {
-                printf("  [no value]\n");
-            }
+            printf("%s=\"%s\"",
+                   wbxml_attribute_name_get_xml_name(attr->name),
+                   wbxml_attribute_get_xml_value(attr));
         }
+    }
+    if (empty) {
+        printf(" />\n");
     } else {
-        printf("  (no attrs)\n");
+        printf(">\n");
+        ctx->indent += TAB_WIDTH;
     }
 }
 
+/* Called when an element is closed. */
+static void end_element(void *vctx,
+                        WBXMLTag *local_name,
+                        WB_BOOL empty)
+{
+    ParseContext *ctx = (ParseContext *)vctx;
+    if (empty) {
+        return;
+    }
+    assert(local_name);
+    assert(local_name->type == WBXML_VALUE_TOKEN);
+    ctx->indent -= TAB_WIDTH;
+    indent(ctx->indent);
+    printf("</%s>\n", wbxml_tag_get_xml_name(local_name));
+}
+
 /* Called to handle character data. */
-static void cdata(void *ctx,
+static void cdata(void *vctx,
                   WB_UTINY *ch,
                   WB_ULONG start,
                   WB_ULONG length)
 {
-    int i;
-    printf("- CDATA:\n");
+    int i, new_line = 0;
+    ParseContext *ctx = (ParseContext *)vctx;
+    indent(ctx->indent);
     for (i = start; i != start + length; i++) {
+        if (new_line && ch[i] != 0x0a) {
+            indent(ctx->indent);
+        }
         putchar(ch[i]);
+        new_line = ch[i] == 0x0a;
     }
 }
 
@@ -262,11 +304,12 @@ static int parse(char *data, long size)
 {
     WBXMLParser *parser;
     WBXMLError err;
+    ParseContext ctx = { 0 };
     static WBXMLContentHandler content_handler = {
         NULL,            /* Start document handler. */
         NULL,            /* End document handler. */
         start_element,   /* Start element handler. */
-        NULL,            /* End element handler. */
+        end_element,     /* End element handler. */
         cdata,           /* Characters handler. */
         NULL,            /* Processing instruction handler. */
     };
@@ -278,6 +321,7 @@ static int parse(char *data, long size)
      * use ISO-8859-1, and have only basic ASCII strings, so just treat input
      * as ASCII. */
     patch_charset(data, size);
+    wbxml_parser_set_user_data(parser, &ctx);
     /* The public id in these files is bogus. They use a custom DTD. */
     wbxml_parser_set_main_table(parser, sv_ciq_ota_table);
     wbxml_parser_set_language(parser, LANG_CIQ_OTA);
