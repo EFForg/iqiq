@@ -1,5 +1,7 @@
 /**
  * Dumps information from a CarrierIQ OTA profile.
+ * Copyright 2011 Jered Wierzbicki (with assistance from Peter Eckersley)
+ * Licensed Under the GNU General Public License version 2.0 or later
  */
 #include <assert.h>
 #include <ctype.h>

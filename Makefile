@@ -1,2 +1,2 @@
-disiq: disiq.c
-	gcc -Wall disiq.c -o disiq -lwbxml2
+disiq: iqiq.c
+	gcc -Wall iqiq.c -o iqiq -lwbxml2
