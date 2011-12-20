@@ -42,10 +42,10 @@
         \ Is the country code for the United States?
         PROPID_MCC #netkey@ 310 = DUP IF
           DROP
-	  \ This seems intended to check if the network code is one of several
-	  \ values, leaving TRUE on the stack if so else FALSE. However it is
-          \ bugged, and actually returns non-zero for any non-zero MNC. For a
-          \ list of mobile network codes, see
+          \ This seems intended to check if the network code is one of several
+          \ values, leaving TRUE on the stack if so else FALSE. However it
+          \ seems to be  buggy, and actually returns non-zero for any 
+          \ non-zero MNC. For a list of mobile network codes, see
           \ http://en.wikipedia.org/wiki/List_of_mobile_network_codes_in_the_United_States#MCC_310
           PROPID_MNC #netkey@  \ (-- m)
           DUP 200 =       \ T-Mobile USA  Formerly Smith Bagley, discontinued (m -- m f) 
