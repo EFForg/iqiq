@@ -1,0 +1,6 @@
+To build iqiq, make sure you have libwbxml2 installed.  On Debian and Ubuntu
+systems, you should be able to install them with:
+
+  apt-get install libwbxml2-dev  
+
+Then just run "make"!
