@@ -111,22 +111,21 @@ const WBXMLAttrEntry sv_ciq_ota_attr_table[] = {
     { "Value",                      NULL, 0x00, 0x3b },
     { "PackageTimeout",             NULL, 0x00, 0x3c },
     { "MaxPackageSize",             NULL, 0x00, 0x3d },
-    { "",                           NULL, 0x00, 0x3e },
-    { "SnapshotTriggers",           NULL, 0x00, 0x3f },
-    { "InactivityTimeout",          NULL, 0x00, 0x40 },
-    { "Reserved_x40_ExtI0",         NULL, 0x00, 0x41 },
-    { "Reserved_x41_ExtI1",         NULL, 0x00, 0x42 },
-    { "Reserved_x42_ExtI2",         NULL, 0x00, 0x43 },
-    { "Reserved_x43_Pi",            NULL, 0x00, 0x44 },
-    { "Reserved_x44_LiteralC",      NULL, 0x00, 0x45 },
-    { "Proxy",                      NULL, 0x00, 0x46 },
-    { "KeepFirst",                  NULL, 0x00, 0x47 },
-    { "KeepLast",                   NULL, 0x00, 0x48 },
-    { "ArchiveFullHeadroom",        NULL, 0x00, 0x49 },
-    { "NetworkAvailableRetryCount", NULL, 0x00, 0x4a },
-    { "ProxyAuthentication",        NULL, 0x00, 0x4b },
-    { "BridgePackageTimeout",       NULL, 0x00, 0x4c },
-    { "Anonymous",                  NULL, 0x00, 0x4d },
+    { "SnapshotTriggers",           NULL, 0x00, 0x3e },
+    { "InactivityTimeout",          NULL, 0x00, 0x3f },
+    { "Reserved_x40_ExtI0",         NULL, 0x00, 0x40 },
+    { "Reserved_x41_ExtI1",         NULL, 0x00, 0x41 },
+    { "Reserved_x42_ExtI2",         NULL, 0x00, 0x42 },
+    { "Reserved_x43_Pi",            NULL, 0x00, 0x43 },
+    { "Reserved_x44_LiteralC",      NULL, 0x00, 0x44 },
+    { "Proxy",                      NULL, 0x00, 0x45 },
+    { "KeepFirst",                  NULL, 0x00, 0x46 },
+    { "KeepLast",                   NULL, 0x00, 0x47 },
+    { "ArchiveFullHeadroom",        NULL, 0x00, 0x48 },
+    { "NetworkAvailableRetryCount", NULL, 0x00, 0x49 },
+    { "ProxyAuthentication",        NULL, 0x00, 0x4a },
+    { "BridgePackageTimeout",       NULL, 0x00, 0x4b },
+    { "Anonymous",                  NULL, 0x00, 0x4c },
 
     { NULL,                         NULL, 0x00, 0x00 }
 };
@@ -345,7 +344,10 @@ int main(int argc, char **argv)
         fprintf(stderr, "Usage: disiq FILE.pro\n");
         return 1;
     }
-    data = slurp(argv[1], &size);
+    if (!(data = slurp(argv[1], &size))) {
+        fprintf(stderr, "Error reading file %s\n", argv[1]);
+        return 1;
+    }
     parse(data, size);
     free(data);
     return 0;

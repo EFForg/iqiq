@@ -8,8 +8,8 @@
     0
     HERE SWAP , 0 , 0 , 0 , USE->REL
     <SchedulerProfile DeleteAfterFailureCount="0"
-                      SnapshotTriggers="60"
-                      ArchiveFullHeadroom="3"
+                      InactivityTimeout="60"
+                      NetworkAvailableRetryCount="3"
                       RetryCount="3"
                       RetryTimer="60"
                       UploadUrl="https://oddca.t-mobile.com/collector/c">
@@ -48,8 +48,8 @@
                         StartTime="21600"
                         UploadDays="64"
                         UploadPeriod="Week" />
-        <Connections BridgePackageTimeout="0">
-            <Connection Reserved_x44_LiteralC="">
+        <Connections Anonymous="0">
+            <Connection Proxy="">
                 : #netkey@ 0 0 METHODCALL ;
                 : $netkey@ 0 1 METHODCALL ;
                 1    CONSTANT PROPID_TECH ;
@@ -91,7 +91,7 @@
     <MetricsBufferProfile />
     <PackageProfiles>
         <PackageProfile ArchiveBufferPriority="255"
-                        KeepFirst="1"
+                        KeepLast="1"
                         MaxWaitForCount="5"
                         PackageName="UPLOAD_EVENT"
                         StartTrigger="UPTR"
