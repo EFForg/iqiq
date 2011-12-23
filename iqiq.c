@@ -341,7 +341,7 @@ int main(int argc, char **argv)
     char *data;
     long size;
     if (argc != 2) {
-        fprintf(stderr, "Usage: disiq FILE.pro\n");
+        fprintf(stderr, "Usage: iqiq FILE.pro\n");
         return 1;
     }
     if (!(data = slurp(argv[1], &size))) {
