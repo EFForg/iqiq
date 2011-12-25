@@ -14,7 +14,12 @@
 
 #include <sys/fcntl.h>
 #include <unistd.h>
-#include "WHEFSApp.c"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "whio/whio_config.h"
+#include "whefs/whefs.h"
+#include "whefs_inode.h"
 
 /* Decompression routine */
 int lzUncompress(unsigned char *input, unsigned char *output, int len, int outlen)
@@ -215,7 +220,7 @@ int main(int argc, const char **argv)
 	}
 
 	/* Iterate over all the inodes in the filesystem */
-	for (i = 0; i <= fs->options.inode_count; i++) {
+	for (i = 0; i <= whefs_fs_options_get(fs)->inode_count; i++) {
 
 		ret = whefs_inode_id_read(fs, i, &n);
 
