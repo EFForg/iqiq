@@ -8,4 +8,5 @@ iqunpack: libwhefs
 
 libwhefs: 
 	make -C libwhefs-20111103 all
+	ln -s libwhefs-20111103/src/libwhefs.so .
 
