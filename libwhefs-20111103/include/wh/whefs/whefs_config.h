@@ -107,7 +107,7 @@ in place of hard-coding the printf format specifier.
     @see WHEFS_ID_TYPE_SFMT
 
 */
-#define WHEFS_ID_TYPE_BITS 16
+#define WHEFS_ID_TYPE_BITS 32
 
 /** @def WHEFS_ID_TYPE_PFMT
 
